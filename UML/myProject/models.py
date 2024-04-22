@@ -1,20 +1,31 @@
 from django.db import models
 
 class Department(models.Model):
-    name = models.CharField(max_length=100)
+    dept_name = models.CharField(max_length=32, primary_key=True)
+    
+class Instructor(models.Model):
+    teacher_id = models.CharField(max_length=5, primary_key=True)
+    name = models.CharField(max_length=32)
+    dept_name = models.CharField(max_length=32)
+    salary = models.IntegerField()
 
-class Professor(models.Model):
-    name = models.CharField(max_length=200)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    salary = models.DecimalField(max_digits=10, decimal_places=2)
-
-class CourseSection(models.Model):
-    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
-    students = models.IntegerField(default=0)
+class Teaches(models.Model):
+    course_id = models.CharField(max_length=10)
+    sec_id = models.CharField(max_length=5)
     semester = models.CharField(max_length=10)
-    academic_year = models.CharField(max_length=10)
+    year = models.IntegerField()
+    teacher_id = models.ForeignKey(Instructor, on_delete=models.CASCADE)
 
-class Research(models.Model):
-    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
-    funding = models.DecimalField(max_digits=15, decimal_places=2)
-    papers_published = models.IntegerField(default=0)
+class Student(models.Model):
+    student_id = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=32)
+    dept_name = models.CharField(max_length=32)
+    total_credits = models.IntegerField()
+
+class Takes(models.Model):
+    student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=10)
+    sec_id = models.CharField(max_length=5)
+    semester = models.CharField(max_length=10)
+    year = models.IntegerField()
+    grade = models.CharField(max_length=2)
