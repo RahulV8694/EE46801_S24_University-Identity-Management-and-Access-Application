@@ -1,12 +1,18 @@
 from django.contrib import admin
+from .models import Instructor, Teaches, Student, Takes
 
-# Register your models here.
-from .models import Professor
-from .models import CourseSection
-from .models import Department
-from .models import Research
+@admin.register(Instructor)
+class InstructorAdmin(admin.ModelAdmin):
+    list_display = ('teacher_id', 'name', 'dept_name', 'salary')
 
-admin.site.register(Professor)
-admin.site.register(CourseSection)
-admin.site.register(Department)
-admin.site.register(Research)
+@admin.register(Teaches)
+class TeachesAdmin(admin.ModelAdmin):
+    list_display = ('course_id', 'sec_id', 'semester', 'year', 'teacher_id')
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('student_id', 'name', 'dept_name', 'total_credits')
+
+@admin.register(Takes)
+class TakesAdmin(admin.ModelAdmin):
+    list_display = ('student_id', 'course_id', 'sec_id', 'semester', 'year', 'grade')
