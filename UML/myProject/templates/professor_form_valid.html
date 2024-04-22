@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            text-align: left;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button[type="submit"] {
+            background-color: #1DA1F2; /* Twitter blue */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0e71c8; /* Darker shade of Twitter blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Sections</h1>
+        <form method="post" action="{% url 'professor_valid' professor_id=professor_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="professor_id" value="{{ professor_id }}">
+            <label for="semester">Semester:</label>
+            <input type="text" id="semester" name="semester"><br><br>
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year"><br><br>
+            <button type="submit" name="action" value="f4">Get Course Sections</button>
+        </form>
+
+        <h1>Students Enrolled</h1>
+        <form method="post" action="{% url 'professor_valid' professor_id=professor_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="professor_id" value="{{ professor_id }}">
+            <label for="section_id_f5">Section ID:</label>
+            <input type="text" id="section_id_f5" name="section_id"><br><br>
+            <label for="semester_f5">Semester:</label>
+            <input type="text" id="semester_f5" name="semester"><br><br>
+            <label for="year_f5">Year:</label>
+            <input type="text" id="year_f5" name="year"><br><br>
+            <button type="submit" name="action" value="f5">Get Students Enrolled</button>
+        </form>
+    </div>
+</body>
+</html>

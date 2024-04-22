@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Sections and Students</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+            margin: 20px;
+            overflow-x: auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Sections and Students</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Section ID</th>
+                    <th>Semester</th>
+                    <th>Year</th>
+                    <th>Number of Students</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course_section in course_sections_and_students %}
+                <tr>
+                    <td>{{ course_section.0 }}</td>
+                    <td>{{ course_section.1 }}</td>
+                    <td>{{ course_section.2 }}</td>
+                    <td>{{ course_section.3 }}</td>
+                    <td>{{ course_section.4 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
