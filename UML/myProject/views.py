@@ -1,7 +1,110 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Avg, Max, Min, Sum
-from .models import Professor, Department, CourseSection, Research
+from django.shortcuts import render,redirect
+from .models import Teaches, Takes, Instructor, Student
+from django.db import connection
+import json
+
+def uni_home(request):
+    return render(request, 'university_home.html')
+
+def professor(request):
+    if request.method == 'POST':
+        if 'professor_id' in request.POST:  # First form for entering Professor ID
+            professor_id = request.POST.get('professor_id')
+
+            # Check if the professor ID exists in the database
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM Instructor WHERE id = %s", [professor_id])
+                professor_exists = cursor.fetchone()
+
+            if professor_exists:
+                return redirect('professor_valid', professor_id=professor_id)
+            else:
+                return render(request, 'professor_form.html', {'invalid_id': True})
+    else:
+        return render(request, 'professor_form.html')
+    
+def professor_valid(request, professor_id):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'f4':
+            # Fetch semester and year from the form
+            semester = request.POST.get('semester')
+            year = request.POST.get('year')
+            print("HI")
+            print(semester,year)
+            # Fetch course sections and students enrolled for the professor in the chosen semester and year
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT t.course_id, t.sec_id, t.semester, t.year, COUNT(tk.student_id) AS num_students
+                    FROM Teaches t
+                    JOIN Takes tk ON t.sec_id = tk.sec_id AND t.semester = tk.semester AND t.year = tk.year
+                    WHERE t.teacher_id = %s AND t.semester = %s AND t.year = %s
+                    GROUP BY t.sec_id, t.semester, t.year;
+                """, [professor_id, semester, year])
+                course_sections_and_students = cursor.fetchall()
+            print(course_sections_and_students)
+            return render(request, 'course_sections_and_students.html', {'course_sections_and_students': course_sections_and_students})
+
+        elif action == 'f5':
+            # Fetch students enrolled in the chosen course section
+            section_id = request.POST.get('section_id')
+            semester = request.POST.get('semester')
+            year = request.POST.get('year')
+
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT tk.student_id, s.name, s.dept_name
+                    FROM Takes tk
+                    JOIN Student s ON tk.student_id = s.student_id
+                    JOIN Teaches t ON t.sec_id = tk.sec_id and t.semester = tk.semester and t.year = tk.year and t.course_id = tk.course_id
+                    WHERE t.teacher_id = %s AND t.sec_id = %s AND t.semester = %s AND t.year = %s
+                """, [professor_id, section_id, semester, year])
+                students_enrolled = cursor.fetchall()
+            
+            return render(request, 'students_enrolled.html', {'students_enrolled': students_enrolled})
+
+    else:
+        # Render the form template
+        return render(request, 'professor_form_valid.html', {'professor_id': professor_id})
+
+def student(request):
+    if request.method == 'POST':
+        student_id = request.POST.get('student_id')
+        # Check if the student ID exists in the database
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM Student WHERE student_id = %s", [student_id])
+            student_exists = cursor.fetchone()
+
+        if student_exists:
+            return redirect('department_semester_form')
+        else:
+            return render(request, 'student_form.html', {'invalid_student_id': True})
+    else:
+        return render(request, 'student_form.html', {'invalid_student_id': False})
+def department_semester_form(request):
+    if request.method == 'POST':
+        department=request.POST.get('department')
+        semester=request.POST.get('semester')
+        year=request.POST.get('year')
+        print(department,year,semester)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT c.title,t.course_id, t.sec_id
+                FROM teaches as t
+                INNER JOIN Course as c
+                ON t.course_id=c.course_id
+                WHERE c.dept_name = %s AND t.year = %s AND t.semester = %s;
+            """, [department, year, semester])   
+            course_sections = cursor.fetchall()
+        print(course_sections)
+        return render(request, 'course_sections_query.html', {'course_sections': course_sections})
+    else:
+        return render(request, 'departmen_semester_form.html')
+        
+
+
 
 
 def home(request):
@@ -9,48 +112,3 @@ def home(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html')
-
-def admin_dashboard(request):
-
-    feature = request.GET.get('feature', 'roster') 
-
-    if feature == 'roster':
-        sort_by = request.GET.get('sort', 'name')  
-        if sort_by == 'name':
-            professors = Professor.objects.all().order_by('name')
-        elif sort_by == 'dept':
-            professors = Professor.objects.all().order_by('department__name')
-        elif sort_by == 'salary':
-            professors = Professor.objects.all().order_by('-salary')
-        
-        data = list(professors.values('name', 'department__name', 'salary'))
-        return JsonResponse(data, safe=False)
-
-    elif feature == 'salary':
-        data = Department.objects.annotate(
-            min_salary=Min('professor__salary'),
-            max_salary=Max('professor__salary'),
-            avg_salary=Avg('professor__salary')
-        ).values('name', 'min_salary', 'max_salary', 'avg_salary')
-        return JsonResponse(list(data), safe=False)
-
-    elif feature == 'performance':
-        professor_id = request.GET.get('professor_id')
-        academic_year = request.GET.get('academic_year')
-        semester = request.GET.get('semester')
-        
-        professor = Professor.objects.get(pk=professor_id)
-        courses_taught = CourseSection.objects.filter(professor=professor, academic_year=academic_year, semester=semester).count()
-        students_taught = CourseSection.objects.filter(professor=professor, academic_year=academic_year, semester=semester).aggregate(total_students=Sum('students'))
-        research_details = Research.objects.filter(professor=professor).aggregate(total_funding=Sum('funding'), total_papers=Sum('papers_published'))
-
-        response_data = {
-            'courses_taught': courses_taught,
-            'students_taught': students_taught.get('total_students', 0),
-            'total_funding': research_details.get('total_funding', 0),
-            'total_papers': research_details.get('total_papers', 0),
-        }
-        return JsonResponse(response_data)
-
-    else:
-        return JsonResponse({'error': 'Invalid feature requested'}, status=400)
