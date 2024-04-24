@@ -99,7 +99,7 @@ def department_semester_form(request):
             """, [department, year, semester])   
             course_sections = cursor.fetchall()
         print(course_sections)
-        return render(request, 'course_sections_query.html', {'course_sections': course_sections})
+        return render(request, 'course_sections_query.html', {'course_sections': course_sections, 'year': year, 'semester': semester})
     else:
         return render(request, 'departmen_semester_form.html')
         
