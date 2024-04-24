@@ -91,11 +91,11 @@ def department_semester_form(request):
         print(department,year,semester)
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT c.title,t.course_id, t.sec_id
-                FROM teaches as t
+                SELECT c.title,s.course_id, s.sec_id, s.building, s.room, s.capacity
+                FROM Section as s
                 INNER JOIN Course as c
-                ON t.course_id=c.course_id
-                WHERE c.dept_name = %s AND t.year = %s AND t.semester = %s;
+                ON s.course_id=c.course_id
+                WHERE c.dept_name = %s AND s.year = %s AND s.semester = %s;
             """, [department, year, semester])   
             course_sections = cursor.fetchall()
         print(course_sections)
