@@ -32,7 +32,7 @@ def professor(request):
     else:
         return render(request, 'professor_form.html')
     
-@login_required
+@login_required(login_url="/professor/")
 def professor_valid(request, professor_id):
     if request.method == 'POST':
         action = request.POST.get('action')
