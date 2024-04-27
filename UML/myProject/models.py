@@ -76,3 +76,17 @@ class InstructorProxy(Instructor):
         proxy = True
         verbose_name = "Instructor Report"
         verbose_name_plural = "Instructor Reports"
+
+class Student(models.Model):
+    student_id = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=32)
+    dept_name = models.CharField(max_length=32)
+    total_credits = models.IntegerField()
+        
+class Takes(models.Model):
+    student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=10)
+    sec_id = models.CharField(max_length=5)
+    semester = models.CharField(max_length=10)
+    year = models.IntegerField()
+    grade = models.CharField(max_length=2)
