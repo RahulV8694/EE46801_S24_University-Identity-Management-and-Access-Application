@@ -4,8 +4,8 @@ from django.shortcuts import render,redirect
 from .models import Teaches, Takes, Instructor, Student
 from django.db import connection
 import json
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 def professor(request):
     if request.method == 'POST':
@@ -32,7 +32,16 @@ def professor(request):
     else:
         return render(request, 'professor_form.html')
     
-@login_required(login_url="/professor/")
+def prof(user):
+    if str(user)=="professor":
+        return True
+    return False
+    
+def professor_logout(request):    
+    logout(request)
+    return redirect('professor')
+
+@user_passes_test(prof, login_url="/professor/")
 def professor_valid(request, professor_id):
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -101,7 +110,16 @@ def student(request):
     else:
         return render(request, 'student_form.html', {'invalid_student_id': False})
     
-@login_required
+def stu(user):
+    if str(user)=="student":
+        return True
+    return False
+
+def student_logout(request):
+    logout(request)
+    return redirect('student')
+
+@user_passes_test(stu, login_url="/student/")
 def department_semester_form(request):
     if request.method == 'POST':
         department=request.POST.get('department').upper()
