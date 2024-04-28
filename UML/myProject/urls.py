@@ -1,5 +1,6 @@
 from . import views
 from django.urls import path
+from django.views.generic import RedirectView
 
 
 urlpatterns = [
@@ -10,7 +11,8 @@ urlpatterns = [
     path('student/', views.student, name='student'),
     path('department_semester_form/',views.department_semester_form,name='department_semester_form'),
     path('professor/logout/', views.professor_logout, name='prof_logout'),
-    path('student/logout/', views.student_logout, name='stu_logout')
-]
+    path('student/logout/', views.student_logout, name='stu_logout'),
+    path('admin-page/', RedirectView.as_view(url='/admin/'),name="admin")
+    ]
 
 
