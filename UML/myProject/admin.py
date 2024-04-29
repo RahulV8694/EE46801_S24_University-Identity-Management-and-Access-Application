@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Count, Sum
 from .models import *
+from django.db.models import Sum  # Import Sum for aggregation
 
 
 @admin.register(Instructor)
@@ -19,7 +21,11 @@ class DepartmentDropdownFilter(admin.SimpleListFilter):
     parameter_name = "dept_name"
 
     def lookups(self, request, model_admin):
-        department_names = set([c.dept_name for c in Salary.objects.all()])
+        department_names = (
+            Salary.objects.order_by("dept_name")
+            .values_list("dept_name", flat=True)
+            .distinct()
+        )
         return [(dept_name, dept_name) for dept_name in department_names]
 
     def queryset(self, request, queryset):
@@ -36,50 +42,3 @@ class SalaryAdmin(admin.ModelAdmin):
 
     def get_ordering(self, request):
         return ["dept_name"]
-
-
-@admin.register(InstructorProxy)
-class InstructorReportAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "dept_name",
-        "sections_taught",
-        "students_taught",
-        "total_funding",
-        "papers_published",
-    )
-
-    def get_queryset(self, request):
-        # Use the correct related_name 'teachings' in prefetch_related
-        qs = super().get_queryset(request)
-        qs = qs.prefetch_related(
-            "teachings", "professorfunding_set", "professorpublications_set"
-        )
-        return qs
-
-    def sections_taught(self, obj):
-        return obj.teachings.count()
-
-    sections_taught.admin_order_field = "teaches__count"
-    sections_taught.short_description = "Sections Taught"
-
-    def students_taught(self, obj):
-        teaches = obj.teachings.all()
-        count = 0
-        for teach in teaches:
-            count += teach.studentcourse_set.count()
-        return count
-
-    students_taught.short_description = "Students Taught"
-
-    def total_funding(self, obj):
-        # Aggregate the total funding for the professor
-        return obj.professorfunding_set.aggregate(total=Sum("amount"))["total"] or 0
-
-    total_funding.short_description = "Total Funding"
-
-    def papers_published(self, obj):
-        # Count the papers published by the professor
-        return obj.professorpublications_set.count()
-
-    papers_published.short_description = "Papers Published"
