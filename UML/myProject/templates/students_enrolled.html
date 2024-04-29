@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative;
         }
         .container {
             background-color: #fff;
@@ -39,9 +40,25 @@
         th {
             background-color: #f2f2f2;
         }
+        .logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background-color: #e63c00;
+        }
     </style>
 </head>
 <body>
+    <button class="logout-btn" onclick="window.location.href='{% url 'stu_logout' %}'">Logout</button>
     <div class="container">
         <h1>Students Enrolled</h1>
         <table>

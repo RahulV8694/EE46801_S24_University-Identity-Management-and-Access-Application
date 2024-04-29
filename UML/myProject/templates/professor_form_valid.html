@@ -22,6 +22,7 @@
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
             width: 300px;
             text-align: center;
+            position: relative; /* Add this line */
         }
         h1 {
             margin-bottom: 20px;
@@ -43,7 +44,7 @@
             outline: none;
         }
         button[type="submit"] {
-            background-color: #1DA1F2; /* Twitter blue */
+            background-color: #1DA1F2;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -53,11 +54,36 @@
             transition: background-color 0.3s ease;
         }
         button[type="submit"]:hover {
-            background-color: #0e71c8; /* Darker shade of Twitter blue on hover */
+            background-color: #0e71c8;
+        }
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f; /* Darker shade of red on hover */
         }
     </style>
 </head>
 <body>
+    <!-- Logout form -->
+    <form method="post" action="{% url 'prof_logout' %}" id="logout-form">
+        {% csrf_token %}
+        <!-- Hidden input field to prevent form from being submitted by Enter key -->
+        <input type="hidden" name="logout" value="true">
+    </form>
+
+    <!-- Logout button -->
+    <button class="logout-button" onclick="document.getElementById('logout-form').submit()">Logout</button>
+
+    <!-- Main content container -->
     <div class="container">
         <h1>Course Sections</h1>
         <form method="post" action="{% url 'professor_valid' professor_id=professor_id %}">

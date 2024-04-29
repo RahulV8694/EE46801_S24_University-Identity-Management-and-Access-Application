@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
-        }
-        h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #666;
-            font-size: 14px;
-            text-align: left;
-        }
-        input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            outline: none;
-        }
-        button[type="submit"] {
-            background-color: #1DA1F2; /* Twitter blue */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        button[type="submit"]:hover {
-            background-color: #0e71c8; /* Darker shade of Twitter blue on hover */
-        }
-        .error-message {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 14px;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+    button[type="submit"] {
+      background-color: #1DA1F2; /* Twitter blue */
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #0e71c8; /* Darker shade of Twitter blue on hover */
+    }
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Enter Student ID</h1>
-        <form method="post" action="{% url 'student' %}">
-            {% csrf_token %}
-            <label for="student_id">Student ID:</label>
-            <input type="text" id="student_id" name="student_id"><br><br>
-            <button type="submit">Submit</button>
-            {% if invalid_student_id %}
-                <p class="error-message">Invalid student ID. Please try again.</p>
-            {% endif %}
-        </form>
-    </div>
+  <div class="container">
+    <h1>Student Login</h1>
+    <form method="post" action="{% url 'student' %}">
+      {% csrf_token %}
+      <label for="student_id">Student ID:</label>
+      <input type="text" id="student_id" name="student_id"><br><br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password">  <br><br>
+      <button type="submit">Submit</button>
+      {% if invalid_student_id %}
+        <p class="error-message">Invalid details. Please try again.</p>
+      {% endif %}
+    </form>
+  </div>
 </body>
 </html>
