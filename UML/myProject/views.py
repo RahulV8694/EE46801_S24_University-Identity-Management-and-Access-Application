@@ -26,9 +26,9 @@ def professor(request):
                 return redirect('professor_valid', professor_id=professor_id)
             else:
                 # Incorrect password
-                return render(request, 'professor_form.html', {'invalid_id': True})
+                return render(request, 'professor_form.html', {'invalid_details': True})
         else:
-            return render(request, 'professor_form.html', {'invalid_id': True})
+            return render(request, 'professor_form.html', {'invalid_details': True})
     else:
         return render(request, 'professor_form.html')
     
@@ -39,7 +39,7 @@ def prof(user):
     
 def professor_logout(request):    
     logout(request)
-    return redirect('professor')
+    return redirect('home')
 
 @user_passes_test(prof, login_url="/professor/")
 def professor_valid(request, professor_id):
@@ -104,9 +104,9 @@ def student(request):
                 return redirect('department_semester_form')
             else:
                 # Incorrect password
-                return render(request, 'student_form.html', {'invalid_student_id': False})
+                return render(request, 'student_form.html', {'invalid_details': True})
         else:
-            return render(request, 'student_form.html', {'invalid_student_id': True})
+            return render(request, 'student_form.html', {'invalid_details': True})
     else:
         return render(request, 'student_form.html', {'invalid_student_id': False})
     
@@ -117,7 +117,7 @@ def stu(user):
 
 def student_logout(request):
     logout(request)
-    return redirect('student')
+    return redirect('home')
 
 @user_passes_test(stu, login_url="/student/")
 def department_semester_form(request):
