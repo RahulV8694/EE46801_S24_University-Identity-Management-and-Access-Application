@@ -60,28 +60,20 @@
 </head>
 <body>
   <div class="container">
-    {% if invalid_id %}
-    <p style="color: red;">Invalid details. Please try again.</p>
-    {% endif %}
     <h1>Professor Login</h1>
     <form method="post" action="{% url 'professor' %}">
       {% csrf_token %}
       <label for="professor_id">Professor ID:</label>
       <input type="text" id="professor_id" name="professor_id">
+<br><br>
       <label for="password">Password:</label>
       <input type="password" id="password" name="password">
+<br><br>
       <button type="submit">Submit</button>
-    </form>
-
-    {% if professor_id_valid %}
-    <h1>Choose Action</h1>
-    <form method="post" action="{% url 'professor' %}">
-      {% csrf_token %}
-      <input type="hidden" name="professor_id" value="{{ professor_id }}">
-      <button type="submit" name="action" value="f4">Get Course Sections</button>
-      <button type="submit" name="action" value="f5">Get Students Enrolled</button>
-    </form>
+	{% if invalid_details %}
+    	<p style="color: red;">Invalid details. Please try again.</p>
     {% endif %}
+    </form>
   </div>
 </body>
 </html>
