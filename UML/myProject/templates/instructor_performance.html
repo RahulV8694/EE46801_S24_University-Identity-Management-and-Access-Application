@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instructor Performance Results</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Instructor Performance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Number of Sections</th>
+          <th>Number of Students</th>
+          <th>Total Funding</th>
+          <th>Number of Publications</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in performance_data %}
+        <tr>
+          <td>{{ item.0 }}</td>
+          <td>{{ item.1 }}</td>
+          <td>{{ item.2 }}</td>
+          <td>${{ item.3 }}</td>
+          <td>{{ item.4 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
